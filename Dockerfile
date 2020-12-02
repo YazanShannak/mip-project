@@ -1,4 +1,4 @@
-FROM yazansh/torch-lightning:latest
+FROM yazansh/pytorch-lightning:latest
 
 
 COPY requirements.txt additional-requirements.txt
