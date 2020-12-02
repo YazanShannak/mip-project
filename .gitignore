@@ -1,4 +1,5 @@
 .idea/
-data/
+/data/
 kaggle.json
 venv/
+__pycache__/
