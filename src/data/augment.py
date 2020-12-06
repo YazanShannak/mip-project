@@ -3,18 +3,6 @@ from typing import Tuple, Any
 from torchvision.transforms import functional as ft
 
 
-def is_positive(name: str) -> bool:
-    """
-    Determines whether the sample's class is positive or negative
-    Args:
-        name: name of the file
-
-    Returns:
-        boolean
-    """
-    return True if int(name[-6]) == 1 else False
-
-
 def augment_mode_1(image: Any, mask: Any) -> Tuple[Any, ...]:
     """
     Augmentation mode 1: Flips the images horizontally
