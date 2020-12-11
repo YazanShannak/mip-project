@@ -1,8 +1,6 @@
 import torch
-import numpy as np
-
 from torch import nn
-from torchvision.transforms import Compose, ToTensor, Resize, CenterCrop
+from torchvision.transforms import CenterCrop
 
 
 class ConvolutionalBlock(nn.Module):
@@ -86,23 +84,23 @@ class Unet(nn.Module):
         en4 = self.encoder4(self.max_pool(en3))
         en5 = self.encoder5(self.max_pool(en4))
 
-        de1 = self.up1(en5)
+        output = self.up1(en5)
 
-        de1 = torch.cat([self.crop1(en4), de1], dim=1)
-        de1 = self.decoder1(de1)
+        output = torch.cat([self.crop1(en4), output], dim=1)
+        output = self.decoder1(output)
 
-        de2 = self.up2(de1)
-        de2 = torch.cat([self.crop2(en3), de2], dim=1)
-        de2 = self.decoder2(de2)
+        output = self.up2(output)
+        output = torch.cat([self.crop2(en3), output], dim=1)
+        output = self.decoder2(output)
 
-        de3 = self.up3(de2)
-        de3 = torch.cat([self.crop3(en2), de3], dim=1)
-        de3 = self.decoder3(de3)
+        output = self.up3(output)
+        output = torch.cat([self.crop3(en2), output], dim=1)
+        output = self.decoder3(output)
 
-        de4 = self.up4(de3)
-        de4 = torch.cat([self.crop4(en1), de4], dim=1)
-        de4 = self.decoder4(de4)
+        output = self.up4(output)
+        output = torch.cat([self.crop4(en1), output], dim=1)
+        output = self.decoder4(output)
 
-        output = self.out(de4)
+        output = self.out(output)
 
         return output

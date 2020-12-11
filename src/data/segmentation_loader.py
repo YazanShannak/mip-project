@@ -4,17 +4,18 @@ import pytorch_lightning as pl
 from torch.utils.data import DataLoader, Dataset
 from PIL import Image
 from torchvision.transforms import Compose, ToTensor, Resize
+from typing import Tuple
 
 
-class AutoencoderDataLoader(pl.LightningDataModule):
+class SegmentationLoader(pl.LightningDataModule):
     def __init__(self, data_dir: str, batch_size: int = 64):
-        super(AutoencoderDataLoader, self).__init__()
+        super(SegmentationLoader, self).__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
 
     def setup(self, stage=None):
-        self.train_dataset = AutoencoderDataset(data_dir=os.path.join(self.data_dir, "train"))
-        self.test_dataset = AutoencoderDataset(data_dir=os.path.join(self.data_dir, "test"))
+        self.train_dataset = SegmentationDataset(data_dir=os.path.join(self.data_dir, "train"))
+        self.test_dataset = SegmentationDataset(data_dir=os.path.join(self.data_dir, "test"))
 
     def train_dataloader(self):
         return DataLoader(dataset=self.train_dataset, batch_size=self.batch_size, shuffle=True)
@@ -23,10 +24,11 @@ class AutoencoderDataLoader(pl.LightningDataModule):
         return DataLoader(dataset=self.test_dataset, batch_size=self.batch_size, shuffle=True)
 
 
-class AutoencoderDataset(Dataset):
+class SegmentationDataset(Dataset):
     def __init__(self, data_dir: str):
-        self.data_dir = os.path.join(data_dir, "images")
-        self.all_images = os.listdir(self.data_dir)
+        self.images_dir = os.path.join(data_dir, "images")
+        self.masks_dir = os.path.join(data_dir, "masks")
+        self.all_images = os.listdir(self.images_dir)
         self.transforms = Compose([
             Resize(size=(512, 512)),
             ToTensor()
@@ -35,7 +37,8 @@ class AutoencoderDataset(Dataset):
     def __len__(self) -> int:
         return len(self.all_images)
 
-    def __getitem__(self, index: int) -> torch.Tensor:
+    def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
         image_name = self.all_images[index]
-        path = os.path.join(self.data_dir, image_name)
-        return self.transforms(Image.open(fp=path))
+        image_path = os.path.join(self.images_dir, image_name)
+        mask_path = os.path.join(self.masks_dir, image_name)
+        return self.transforms(Image.open(fp=image_path)), self.transforms(Image.open(fp=mask_path))
