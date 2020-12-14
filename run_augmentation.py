@@ -1,4 +1,5 @@
 import os
+import shutil
 from src.data.augment import augment_mode_1, augment_mode_2
 from src.data.utils import is_positive, change_id_name, get_id
 from PIL import Image
@@ -31,3 +32,6 @@ for image_name in os.listdir(raw_images_dir):
 
         aug_image_2.save(os.path.join(processed_images_dir, aug_2_id), "PNG")
         aug_mask_2.save(os.path.join(processed_masks_dir, aug_2_id), "PNG")
+
+    shutil.copy(src=image_path, dst=os.path.join(processed_images_dir, image_name))
+    shutil.copy(src=mask_path, dst=os.path.join(processed_masks_dir, image_name))
