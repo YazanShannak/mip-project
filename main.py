@@ -15,10 +15,9 @@ version = 1
 lr = 1e-4
 
 checkpoint_callback = ModelCheckpoint(monitor="val_loss", mode="min")
-
 tensorboard_logger = TensorBoardLogger(save_dir="logs", name=model_name, version=version)
 
 model = AutoEncoder(lr=lr)
 
-trainer = pl.Trainer(gpus=-1, logger=tensorboard_logger, max_epochs=35, callbacks=[checkpoint_callback])
+trainer = pl.Trainer(gpus=-1, logger=tensorboard_logger, max_epochs=35, callbacks=[checkpoint_callback], precision=16)
 trainer = trainer.fit(model=model, datamodule=images_datamodule)

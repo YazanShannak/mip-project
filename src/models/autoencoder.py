@@ -10,10 +10,10 @@ class AutoEncoder(pl.LightningModule):
         self.save_hyperparameters()
         self.model = Unet()
         self.lr = lr
-        self.criterion = nn.BCELoss()
+        self.criterion = nn.MSELoss()
 
     def forward(self, x):
-        return torch.relu(self.model(x))
+        return torch.sigmoid(self.model(x))
 
     def training_step(self, batch, batch_idx):
         output = self.forward(batch)

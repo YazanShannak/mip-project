@@ -23,6 +23,7 @@ class Unet(nn.Module):
             ConvolutionalBlock(in_channels=1, out_channels=64, kernel_size=3, padding=1),
             ConvolutionalBlock(in_channels=64, out_channels=64, kernel_size=3, padding=1),
         )
+
         self.encoder2 = nn.Sequential(
             ConvolutionalBlock(in_channels=64, out_channels=128, kernel_size=3, padding=1),
             ConvolutionalBlock(in_channels=128, out_channels=128, kernel_size=3, padding=1),
@@ -54,6 +55,7 @@ class Unet(nn.Module):
             ConvolutionalBlock(in_channels=1024, out_channels=512, kernel_size=3, padding=1),
             ConvolutionalBlock(in_channels=512, out_channels=512, kernel_size=3, padding=1),
         )
+
         self.decoder2 = nn.Sequential(
             ConvolutionalBlock(in_channels=512, out_channels=256, kernel_size=3, padding=1),
             ConvolutionalBlock(in_channels=256, out_channels=256, kernel_size=3, padding=1),
@@ -67,7 +69,6 @@ class Unet(nn.Module):
         self.decoder4 = nn.Sequential(
             ConvolutionalBlock(in_channels=128, out_channels=64, kernel_size=3, padding=1),
             ConvolutionalBlock(in_channels=64, out_channels=64, kernel_size=3, padding=1),
-
         )
 
         self.crop1 = CenterCrop(size=(64, 64))

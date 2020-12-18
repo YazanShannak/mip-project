@@ -1,20 +1,25 @@
 import os
 import shutil
 from src.data.augment import augment_mode_1, augment_mode_2
-from src.data.utils import is_positive, change_id_name, get_id
+from src.data.utils import is_positive, change_id_name, get_id, is_train
 from PIL import Image
 
 data_dir = os.path.join(os.curdir, "data")
-raw_dir = os.path.join(data_dir, "raw")
+raw_dir = os.path.join(data_dir, "raw", "")
+
 processed_dir = os.path.join(data_dir, "processed")
+os.mkdir(processed_dir)
+train_dir = os.path.join(processed_dir, "train")
+test_dir = os.path.join(processed_dir, "test")
+os.mkdir(train_dir)
+os.mkdir(test_dir)
 
 raw_images_dir = os.path.join(raw_dir, "png_images")
 raw_masks_dir = os.path.join(raw_dir, "png_masks")
 
-processed_images_dir = os.path.join(processed_dir, "images")
-processed_masks_dir = os.path.join(processed_dir, "masks")
-
 for image_name in os.listdir(raw_images_dir):
+    processed_images_dir = os.path.join(train_dir if is_train(image_name) else test_dir, "images")
+    processed_masks_dir = os.path.join(train_dir if is_train(image_name) else test_dir, "masks")
     image_path = os.path.join(raw_images_dir, image_name)
     mask_path = os.path.join(raw_masks_dir, image_name)
     image, mask = Image.open(fp=image_path), Image.open(fp=mask_path)
