@@ -41,5 +41,5 @@ for image_name in os.listdir(raw_images_dir):
         aug_image_2.save(os.path.join(processed_images_dir, aug_2_id), "PNG")
         aug_mask_2.save(os.path.join(processed_masks_dir, aug_2_id), "PNG")
 
-    shutil.copy(src=image_path, dst=os.path.join(processed_images_dir, image_name))
-    shutil.copy(src=mask_path, dst=os.path.join(processed_masks_dir, image_name))
+    shutil.copyfile(src=image_path, dst=os.path.join(processed_images_dir, image_name))
+    shutil.copyfile(src=mask_path, dst=os.path.join(processed_masks_dir, image_name))
