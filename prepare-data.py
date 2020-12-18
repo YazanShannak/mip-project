@@ -5,14 +5,17 @@ from src.data.utils import is_positive, change_id_name, get_id, is_train
 from PIL import Image
 
 data_dir = os.path.join(os.curdir, "data")
-raw_dir = os.path.join(data_dir, "raw", "")
+raw_dir = os.path.join(data_dir, "raw", "siim-acr-pneumothorax")
 
 processed_dir = os.path.join(data_dir, "processed")
-os.mkdir(processed_dir)
 train_dir = os.path.join(processed_dir, "train")
 test_dir = os.path.join(processed_dir, "test")
-os.mkdir(train_dir)
-os.mkdir(test_dir)
+try:
+    os.mkdir(processed_dir)
+    os.mkdir(train_dir)
+    os.mkdir(test_dir)
+except:
+    pass
 
 raw_images_dir = os.path.join(raw_dir, "png_images")
 raw_masks_dir = os.path.join(raw_dir, "png_masks")
