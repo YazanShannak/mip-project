@@ -4,5 +4,4 @@ kaggle.json
 venv/
 __pycache__/
 .ipynb_checkpoints/
-logs/
 train.out
