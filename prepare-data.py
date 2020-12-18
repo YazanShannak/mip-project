@@ -14,6 +14,11 @@ try:
     os.mkdir(processed_dir)
     os.mkdir(train_dir)
     os.mkdir(test_dir)
+    os.mkdir(os.path.join(train_dir, "images"))
+    os.mkdir(os.path.join(train_dir, "masks"))
+
+    os.mkdir(os.path.join(test_dir, "images"))
+    os.mkdir(os.path.join(test_dir, "masks"))
 except:
     pass
 
