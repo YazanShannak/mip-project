@@ -1,5 +1,6 @@
 import os
 import shutil
+from tqdm import tqdm
 from src.data.augment import augment_mode_1, augment_mode_2
 from src.data.utils import is_positive, change_id_name, get_id, is_train
 from PIL import Image
@@ -16,7 +17,6 @@ try:
     os.mkdir(test_dir)
     os.mkdir(os.path.join(train_dir, "images"))
     os.mkdir(os.path.join(train_dir, "masks"))
-
     os.mkdir(os.path.join(test_dir, "images"))
     os.mkdir(os.path.join(test_dir, "masks"))
 except:
@@ -25,7 +25,7 @@ except:
 raw_images_dir = os.path.join(raw_dir, "png_images")
 raw_masks_dir = os.path.join(raw_dir, "png_masks")
 
-for image_name in os.listdir(raw_images_dir):
+for image_name in tqdm(os.listdir(raw_images_dir), desc="Augmenting and copying data"):
     processed_images_dir = os.path.join(train_dir if is_train(image_name) else test_dir, "images")
     processed_masks_dir = os.path.join(train_dir if is_train(image_name) else test_dir, "masks")
     image_path = os.path.join(raw_images_dir, image_name)
