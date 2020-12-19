@@ -35,5 +35,5 @@ class AutoEncoder(pl.LightningModule):
         scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=self.gamma)
         return {
             "optimizer": optimizer,
-            "scheduler": scheduler
+            "lr_scheduler": scheduler
         }

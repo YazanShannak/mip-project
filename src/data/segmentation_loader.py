@@ -3,7 +3,7 @@ import torch
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, Dataset
 from PIL import Image
-from torchvision.transforms import Compose, ToTensor, Resize
+from torchvision.transforms import Compose, ToTensor, Resize, Normalize
 from typing import Tuple
 
 
@@ -21,7 +21,7 @@ class SegmentationLoader(pl.LightningDataModule):
         return DataLoader(dataset=self.train_dataset, batch_size=self.batch_size, shuffle=True)
 
     def val_dataloader(self):
-        return DataLoader(dataset=self.test_dataset, batch_size=self.batch_size, shuffle=True)
+        return DataLoader(dataset=self.test_dataset, batch_size=self.batch_size, shuffle=False)
 
 
 class SegmentationDataset(Dataset):
@@ -33,6 +33,11 @@ class SegmentationDataset(Dataset):
             Resize(size=(512, 512)),
             ToTensor()
         ])
+        self.image_transforms = Compose([
+            Resize(size=(512, 512)),
+            ToTensor(),
+            Normalize((0.4828,), (0.2488,))
+        ])
 
     def __len__(self) -> int:
         return len(self.all_images)
@@ -41,4 +46,4 @@ class SegmentationDataset(Dataset):
         image_name = self.all_images[index]
         image_path = os.path.join(self.images_dir, image_name)
         mask_path = os.path.join(self.masks_dir, image_name)
-        return self.transforms(Image.open(fp=image_path)), self.transforms(Image.open(fp=mask_path))
+        return self.image_transforms(Image.open(fp=image_path)), self.transforms(Image.open(fp=mask_path))
