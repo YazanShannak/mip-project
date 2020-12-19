@@ -1,22 +1,23 @@
 import torch
 import pytorch_lightning as pl
 from src.models.unet import Unet
-from src.models.utils import DiceCoeffecient, IoUCoeffecient, DiceBCELoss
+from src.models.utils import DiceCoefficient, IoUCoefficient, DiceBCELoss
 
 
 class SegmentationUnet(pl.LightningModule):
-    def __init__(self, lr: float = 1e-4):
+    def __init__(self, lr: float = 1e-4, gamma: float = 0.5):
         super(SegmentationUnet, self).__init__()
         self.save_hyperparameters()
         self.model = Unet()
 
         self.lr = lr
+        self.gamma = gamma
         self.criterion = DiceBCELoss()
-        self.dice = DiceCoeffecient()
-        self.iou = IoUCoeffecient()
+        self.dice = DiceCoefficient()
+        self.iou = IoUCoefficient()
 
     def forward(self, x):
-        return torch.sigmoid(self.model(x))
+        return self.model(x)
 
     def training_step(self, batch, batch_idx):
         inputs, target = batch
@@ -28,7 +29,7 @@ class SegmentationUnet(pl.LightningModule):
 
         self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         self.log("train_dice", dice, on_step=True, on_epoch=True, prog_bar=False, logger=True)
-        self.log("train_iou", iou, on_step=True, on_epoch=True, prog_bar=False, logger=True)
+        self.log("train_iou", iou, on_step=True, on_epoch=True, prog_bar=True, logger=True)
 
         return loss
 
@@ -47,4 +48,8 @@ class SegmentationUnet(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(params=self.parameters(), lr=self.lr)
-        return optimizer
+        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=self.gamma)
+        return {
+            "optimizer": optimizer,
+            "lr_scheduler": scheduler
+        }
