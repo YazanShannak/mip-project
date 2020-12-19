@@ -75,8 +75,8 @@ class Unet(nn.Module):
         self.crop2 = CenterCrop(size=(128, 128))
         self.crop3 = CenterCrop(size=(256, 256))
         self.crop4 = CenterCrop(size=(512, 512))
-
-        self.out = ConvolutionalBlock(in_channels=64, out_channels=1, kernel_size=1)
+        self.out_conv = nn.Conv2d(in_channels=64, out_channels=1, kernel_size=1)
+        self.out_bn = nn.BatchNorm2d(num_features=1)
 
     def forward(self, x):
         en1 = self.encoder1(x)
@@ -102,6 +102,7 @@ class Unet(nn.Module):
         output = torch.cat([self.crop4(en1), output], dim=1)
         output = self.decoder4(output)
 
-        output = self.out(output)
-
+        output = self.out_conv(output)
+        output = self.out_bn(output)
+        output = torch.sigmoid(output)
         return output

@@ -14,7 +14,7 @@ class AutoEncoder(pl.LightningModule):
         self.criterion = nn.MSELoss()
 
     def forward(self, x):
-        return torch.sigmoid(self.model(x))
+        return self.model(x)
 
     def training_step(self, batch, batch_idx):
         output = self.forward(batch)
