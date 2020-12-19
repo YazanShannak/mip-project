@@ -5,11 +5,12 @@ from torch import nn
 
 
 class AutoEncoder(pl.LightningModule):
-    def __init__(self, lr: float = 1e-4):
+    def __init__(self, lr: float = 1e-4, gamma: float = 0.5):
         super(AutoEncoder, self).__init__()
         self.save_hyperparameters()
         self.model = Unet()
         self.lr = lr
+        self.gamma = gamma
         self.criterion = nn.MSELoss()
 
     def forward(self, x):
@@ -31,4 +32,8 @@ class AutoEncoder(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(params=self.parameters(), lr=self.lr)
-        return optimizer
+        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=self.gamma)
+        return {
+            "optimizer": optimizer,
+            "scheduler": scheduler
+        }

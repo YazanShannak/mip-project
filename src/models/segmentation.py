@@ -43,7 +43,6 @@ class SegmentationUnet(pl.LightningModule):
         self.log("val_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log("val_dice", dice, on_step=False, on_epoch=True, prog_bar=False, logger=True)
         self.log("val_iou", iou, on_step=False, on_epoch=True, prog_bar=False, logger=True)
-
         return loss
 
     def configure_optimizers(self):

@@ -17,10 +17,10 @@ class AutoencoderDataLoader(pl.LightningDataModule):
         self.test_dataset = AutoencoderDataset(data_dir=os.path.join(self.data_dir, "test"))
 
     def train_dataloader(self):
-        return DataLoader(dataset=self.train_dataset, batch_size=self.batch_size, shuffle=True)
+        return DataLoader(dataset=self.train_dataset, batch_size=self.batch_size, shuffle=True, pin_memory=True)
 
     def val_dataloader(self):
-        return DataLoader(dataset=self.test_dataset, batch_size=self.batch_size, shuffle=True)
+        return DataLoader(dataset=self.test_dataset, batch_size=self.batch_size, shuffle=True, pin_memory=True)
 
 
 class AutoencoderDataset(Dataset):
