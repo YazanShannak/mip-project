@@ -28,7 +28,7 @@ class SegmentationUnet(pl.LightningModule):
         iou = self.iou(output, target)
 
         self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log("train_dice", dice, on_step=Ture, on_epoch=True, prog_bar=False, logger=True)
+        self.log("train_dice", dice, on_step=True, on_epoch=True, prog_bar=False, logger=True)
         self.log("train_iou", iou, on_step=True, on_epoch=True, prog_bar=False, logger=True)
         return loss
 

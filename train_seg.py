@@ -12,7 +12,7 @@ images_datamodule = SegmentationLoader(data_dir=processed_dir, batch_size=2)
 
 model_name = "unet"
 version = 2
-lr = 1e-2
+lr = 1e-4
 gamma = 1
 
 checkpoint_callback = ModelCheckpoint(monitor="val_loss", mode="min")
