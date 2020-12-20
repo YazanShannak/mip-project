@@ -1,6 +1,5 @@
 import torch
 import pytorch_lightning as pl
-from torch import nn
 from src.models.unet import Unet
 from src.models.utils import DiceCoefficient, IoUCoefficient, DiceBCELoss
 
@@ -29,15 +28,8 @@ class SegmentationUnet(pl.LightningModule):
         iou = self.iou(output, target)
 
         self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log("train_dice", dice, on_step=True, on_epoch=True, prog_bar=False, logger=True)
-        self.log("train_iou", iou, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        positive_indices = torch.where(target > 0)[0]
-        if len(positive_indices) > 0:
-            index = positive_indices[0].item()
-            self.logger.experiment.add_image("Predicted Mask", output[index].cpu(), batch_idx,
-                                             dataformats="CHW")
-            self.logger.experiment.add_image("Actual Mask", target[index].cpu(), batch_idx,
-                                             dataformats="CHW")
+        self.log("train_dice", dice, on_step=Ture, on_epoch=True, prog_bar=False, logger=True)
+        self.log("train_iou", iou, on_step=True, on_epoch=True, prog_bar=False, logger=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -51,6 +43,14 @@ class SegmentationUnet(pl.LightningModule):
         self.log("val_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log("val_dice", dice, on_step=False, on_epoch=True, prog_bar=False, logger=True)
         self.log("val_iou", iou, on_step=False, on_epoch=True, prog_bar=False, logger=True)
+
+        positive_indices = torch.where(target > 0)[0]
+        if len(positive_indices) > 0:
+            index = positive_indices[0].item()
+            self.logger.experiment.add_image("Predicted Mask", output[index].cpu(), self.global_step,
+                                             dataformats="CHW")
+            self.logger.experiment.add_image("Actual Mask", target[index].cpu(), self.global_step,
+                                             dataformats="CHW")
         return loss
 
     def configure_optimizers(self):
