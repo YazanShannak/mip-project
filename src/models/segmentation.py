@@ -1,5 +1,6 @@
 import torch
 import pytorch_lightning as pl
+from torch import nn
 from src.models.unet import Unet
 from src.models.utils import DiceCoefficient, IoUCoefficient, DiceBCELoss
 
@@ -22,6 +23,7 @@ class SegmentationUnet(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         inputs, target = batch
         output = self.forward(inputs)
+
         loss = self.criterion(output, target)
 
         dice = self.dice(output, target)
@@ -30,7 +32,12 @@ class SegmentationUnet(pl.LightningModule):
         self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         self.log("train_dice", dice, on_step=True, on_epoch=True, prog_bar=False, logger=True)
         self.log("train_iou", iou, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-
+        positive_indices = torch.where(target > 0)[0]
+        if len(positive_indices) > 0:
+            self.logger.experiment.add_image("Predicted Mask", output[positive_indices[0].item()].cpu(), batch_idx,
+                                             dataformats="CHW")
+            self.logger.experiment.add_image("Actual Mask", target[positive_indices[0].item()].cpu(), batch_idx,
+                                             dataformats="CHW")
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -39,7 +46,7 @@ class SegmentationUnet(pl.LightningModule):
         loss = self.criterion(output, target)
 
         dice = self.dice(output, target)
-        iou = self.dice(output, target)
+        iou = self.iou(output, target)
 
         self.log("val_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log("val_dice", dice, on_step=False, on_epoch=True, prog_bar=False, logger=True)

@@ -2,8 +2,6 @@ import os
 from PIL import Image
 from src.data.autoencoder_loader import AutoencoderDataLoader
 from src.models.autoencoder import AutoEncoder
-from matplotlib import pyplot as plt
-import numpy as np
 
 data_dir = os.path.join(os.curdir, "data")
 processed_dir = os.path.abspath(os.path.join(data_dir, "processed"))
