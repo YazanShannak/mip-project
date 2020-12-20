@@ -46,4 +46,5 @@ class SegmentationDataset(Dataset):
         image_name = self.all_images[index]
         image_path = os.path.join(self.images_dir, image_name)
         mask_path = os.path.join(self.masks_dir, image_name)
-        return self.image_transforms(Image.open(fp=image_path)), self.transforms(Image.open(fp=mask_path))
+        return self.image_transforms(Image.open(fp=image_path)), torch.where(
+            self.transforms(Image.open(fp=mask_path)) > 0, 1, 0).float()

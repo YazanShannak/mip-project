@@ -17,6 +17,9 @@ class Dice(nn.Module):
 
         return dice
 
+    def forward(self, inputs, targets, smooth=1):
+        pass
+
 
 class DiceCoefficient(Dice):
     def __init__(self):

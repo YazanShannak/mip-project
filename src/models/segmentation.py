@@ -23,7 +23,6 @@ class SegmentationUnet(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         inputs, target = batch
         output = self.forward(inputs)
-
         loss = self.criterion(output, target)
 
         dice = self.dice(output, target)
@@ -34,9 +33,10 @@ class SegmentationUnet(pl.LightningModule):
         self.log("train_iou", iou, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         positive_indices = torch.where(target > 0)[0]
         if len(positive_indices) > 0:
-            self.logger.experiment.add_image("Predicted Mask", output[positive_indices[0].item()].cpu(), batch_idx,
+            index = positive_indices[0].item()
+            self.logger.experiment.add_image("Predicted Mask", output[index].cpu(), batch_idx,
                                              dataformats="CHW")
-            self.logger.experiment.add_image("Actual Mask", target[positive_indices[0].item()].cpu(), batch_idx,
+            self.logger.experiment.add_image("Actual Mask", target[index].cpu(), batch_idx,
                                              dataformats="CHW")
         return loss
 

@@ -103,6 +103,6 @@ class Unet(nn.Module):
         output = self.decoder4(output)
 
         output = self.out_conv(output)
-        output = self.out_bn(output)
+        # output = self.out_bn(output)
         output = torch.sigmoid(output)
         return output
