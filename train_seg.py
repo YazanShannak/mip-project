@@ -11,7 +11,7 @@ checkpoint_path = os.path.join(os.curdir, "logs", "autoencoder", "version_1", "c
 images_datamodule = SegmentationLoader(data_dir=processed_dir, batch_size=8)
 
 model_name = "unet"
-version = 3
+version = "pretrained_autoencoder_1"
 lr = 1e-4
 gamma = 0.75
 
