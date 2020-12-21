@@ -8,7 +8,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
 data_dir = os.path.join(os.curdir, "data")
 processed_dir = os.path.abspath(os.path.join(data_dir, "processed"))
 
-images_datamodule = AutoencoderDataLoader(data_dir=processed_dir, batch_size=8)
+images_datamodule = AutoencoderDataLoader(data_dir=processed_dir, batch_size=16)
 
 model_name = "autoencoder"
 version = 1
@@ -22,4 +22,6 @@ model = AutoEncoder(lr=lr, gamma=0.75)
 
 trainer = pl.Trainer(gpus=-1, logger=tensorboard_logger, max_epochs=35, callbacks=[checkpoint_callback, lr_logger],
                      precision=16)
-trainer = trainer.fit(model=model, datamodule=images_datamodule)
+
+if __name__ == "__main__":
+    trainer = trainer.fit(model=model, datamodule=images_datamodule)
