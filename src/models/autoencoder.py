@@ -1,6 +1,6 @@
 import torch
 import pytorch_lightning as pl
-from src.models.unet import Unet
+from src.models.unet import UnetEncoder, UnetDecoder
 from torch import nn
 
 
@@ -8,13 +8,16 @@ class AutoEncoder(pl.LightningModule):
     def __init__(self, lr: float = 1e-4, gamma: float = 0.5):
         super(AutoEncoder, self).__init__()
         self.save_hyperparameters()
-        self.model = Unet()
+        self.encoder = UnetEncoder()
+        self.decoder = UnetDecoder()
         self.lr = lr
         self.gamma = gamma
         self.criterion = nn.MSELoss()
 
     def forward(self, x):
-        return self.model(x)
+        encoder_outputs = self.encoder(x)
+        output = self.decoder(*encoder_outputs)
+        return output
 
     def training_step(self, batch, batch_idx):
         output = self.forward(batch)

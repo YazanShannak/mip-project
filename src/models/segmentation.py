@@ -1,14 +1,21 @@
 import torch
 import pytorch_lightning as pl
-from src.models.unet import Unet
+from src.models.unet import UnetEncoder, UnetDecoder
 from src.models.utils import DiceCoefficient, IoUCoefficient, DiceBCELoss
 
 
 class SegmentationUnet(pl.LightningModule):
-    def __init__(self, lr: float = 1e-4, gamma: float = 0.5):
+    def __init__(self, lr: float = 1e-4, gamma: float = 0.5, freeze_encoder: bool = False):
         super(SegmentationUnet, self).__init__()
         self.save_hyperparameters()
-        self.model = Unet()
+        self.encoder = UnetEncoder()
+        self.decoder = UnetDecoder()
+
+        print(freeze_encoder)
+        if freeze_encoder:
+            self.encoder.eval()
+            for param in self.encoder.parameters():
+                param.requires_grad = False
 
         self.lr = lr
         self.gamma = gamma
@@ -17,7 +24,9 @@ class SegmentationUnet(pl.LightningModule):
         self.iou = IoUCoefficient()
 
     def forward(self, x):
-        return self.model(x)
+        encoder_outputs = self.encoder(x)
+        output = self.decoder(*encoder_outputs)
+        return output
 
     def training_step(self, batch, batch_idx):
         inputs, target = batch
