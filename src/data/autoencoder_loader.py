@@ -34,7 +34,7 @@ class AutoencoderDataset(Dataset):
         ])
 
     def __len__(self) -> int:
-        return int(len(self.all_images) / 4)
+        return int(len(self.all_images))
 
     def __getitem__(self, index: int) -> torch.Tensor:
         image_name = self.all_images[index]
