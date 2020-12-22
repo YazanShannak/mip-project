@@ -31,7 +31,7 @@ class AutoEncoder(pl.LightningModule):
         output = self.forward(batch)
         loss = self.criterion(output, batch)
 
-        self.log("val_loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log("val_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.logger.experiment.add_image("Predicted Mask", output[0], self.global_step,
                                          dataformats="CHW")
         self.logger.experiment.add_image("Actual Mask", batch[0], self.global_step,
