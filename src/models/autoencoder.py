@@ -29,12 +29,14 @@ class AutoEncoder(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         output = self.forward(batch)
+        batch = (batch * 0.2488) + 0.4828
         loss = self.criterion(output, batch)
 
         self.log("val_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
-        self.logger.experiment.add_image("Predicted Mask", output[0], self.global_step,
+        random_index = torch.randint(low=0, high=len(batch) - 1, size=(1,)).item().cpu()
+        self.logger.experiment.add_image("Reconstructed Image", output[random_index], self.global_step,
                                          dataformats="CHW")
-        self.logger.experiment.add_image("Actual Mask", batch[0], self.global_step,
+        self.logger.experiment.add_image("Actual Image", batch[random_index], self.global_step,
                                          dataformats="CHW")
         return loss
 
