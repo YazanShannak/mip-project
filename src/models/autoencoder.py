@@ -33,7 +33,7 @@ class AutoEncoder(pl.LightningModule):
         loss = self.criterion(output, batch)
 
         self.log("val_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
-        random_index = torch.randint(low=0, high=len(batch) - 1, size=(1,)).item().cpu()
+        random_index = torch.randint(low=0, high=len(batch) - 1, size=(1,)).item()
         self.logger.experiment.add_image("Reconstructed Image", output[random_index], self.global_step,
                                          dataformats="CHW")
         self.logger.experiment.add_image("Actual Image", batch[random_index], self.global_step,
