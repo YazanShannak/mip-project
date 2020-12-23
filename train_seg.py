@@ -8,10 +8,10 @@ from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor, Ea
 data_dir = os.path.join(os.curdir, "data")
 processed_dir = os.path.abspath(os.path.join(data_dir, "processed"))
 checkpoint_path = os.path.join(os.curdir, "logs", "autoencoder", "version_10", "checkpoints", "epoch=6.ckpt")
-images_datamodule = SegmentationLoader(data_dir=processed_dir, batch_size=4)
+images_datamodule = SegmentationLoader(data_dir=processed_dir, batch_size=16)
 
 model_name = "unet"
-version = "30"
+version = 1
 lr = 1e-4
 gamma = 0.75
 freeze_encoder = False
