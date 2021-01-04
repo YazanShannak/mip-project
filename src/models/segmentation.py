@@ -11,7 +11,6 @@ class SegmentationUnet(pl.LightningModule):
         self.encoder = UnetEncoder()
         self.decoder = UnetDecoder()
 
-        print(freeze_encoder)
         if freeze_encoder:
             self.encoder.eval()
             for param in self.encoder.parameters():
