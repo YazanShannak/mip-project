@@ -1,11 +1,11 @@
 import torch
 import pytorch_lightning as pl
 from src.models.unet import UnetEncoder, UnetDecoder
-from src.models.utils import DiceCoefficient, IoUCoefficient, DiceBCELoss
+from src.models.utils import DiceCoefficient, IoUCoefficient, DiceBCELoss, FocalLoss
 
 
 class SegmentationUnet(pl.LightningModule):
-    def __init__(self, lr: float = 1e-4, gamma: float = 0.5, freeze_encoder: bool = False):
+    def __init__(self, lr: float = 1e-4, gamma: float = 0.5, freeze_encoder: bool = False, loss="dicebce"):
         super(SegmentationUnet, self).__init__()
         self.save_hyperparameters()
         self.encoder = UnetEncoder()
@@ -18,7 +18,12 @@ class SegmentationUnet(pl.LightningModule):
 
         self.lr = lr
         self.gamma = gamma
+        losses = ["dicebce", "focal", "bce", "dice"]
+        assert loss in losses
+
         self.criterion = DiceBCELoss()
+        if loss == "focal":
+            self.criterion = FocalLoss()
         self.dice = DiceCoefficient()
         self.iou = IoUCoefficient()
 
