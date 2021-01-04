@@ -26,7 +26,7 @@ early_stop = EarlyStopping(monitor="val_loss", min_delta=0.001, mode="min", pati
 
 model = SegmentationUnet(lr=lr, gamma=gamma, freeze_encoder=False, loss="focal")
 
-trainer = pl.Trainer(gpus=4, logger=tensorboard_logger, max_epochs=50,
+trainer = pl.Trainer(gpus=-1, logger=tensorboard_logger, max_epochs=50,
                      callbacks=[checkpoint_callback, lr_logger, early_stop])
 
 if __name__ == "__main__":
