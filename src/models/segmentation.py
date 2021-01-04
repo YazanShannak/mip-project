@@ -61,7 +61,7 @@ class SegmentationUnet(pl.LightningModule):
         if len(positive_indices) > 0:
             random_index = torch.randint(low=0, high=len(positive_indices) - 1, size=(1,)).item()
             index = positive_indices[random_index].item()
-            self.logger.experiment.add_image("Predicted Mask", output[index], self.global_step,
+            self.logger.experiment.add_image("Predicted Mask", torch.where(output[index] > 0.5, 1, 0), self.global_step,
                                              dataformats="CHW")
             self.logger.experiment.add_image("Actual Mask", target[index], self.global_step,
                                              dataformats="CHW")
