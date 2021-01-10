@@ -8,7 +8,7 @@ class SegmentationUnet(pl.LightningModule):
     def __init__(self, lr: float = 1e-4, gamma: float = 0.5, freeze_encoder: bool = False, encoder_weights=None,
                  decoder_weights=None):
         super(SegmentationUnet, self).__init__()
-        self.save_hyperparameters()
+        self.save_hyperparameters("lr", "gamma", "freeze_encoder")
         self.encoder = UnetEncoder()
         self.decoder = UnetDecoder()
 
