@@ -5,11 +5,18 @@ from src.models.utils import DiceCoefficient, IoUCoefficient, DiceBCELoss, Focal
 
 
 class SegmentationUnet(pl.LightningModule):
-    def __init__(self, lr: float = 1e-4, gamma: float = 0.5, freeze_encoder: bool = False, loss="dicebce"):
+    def __init__(self, lr: float = 1e-4, gamma: float = 0.5, freeze_encoder: bool = False, encoder_weights=None,
+                 decoder_weights=None):
         super(SegmentationUnet, self).__init__()
         self.save_hyperparameters()
         self.encoder = UnetEncoder()
         self.decoder = UnetDecoder()
+
+        if encoder_weights is not None:
+            self.encoder.load_state_dict(state_dict=encoder_weights)
+
+        if decoder_weights is not None:
+            self.decoder.load_state_dict(state_dict=decoder_weights)
 
         if freeze_encoder:
             self.encoder.eval()
@@ -18,12 +25,7 @@ class SegmentationUnet(pl.LightningModule):
 
         self.lr = lr
         self.gamma = gamma
-        losses = ["dicebce", "focal", "bce", "dice"]
-        assert loss in losses
-
         self.criterion = DiceBCELoss()
-        if loss == "focal":
-            self.criterion = FocalLoss()
         self.dice = DiceCoefficient()
         self.iou = IoUCoefficient()
 
