@@ -3,6 +3,7 @@ import torch
 import pytorch_lightning as pl
 from src.data.segmentation_loader import SegmentationLoader
 from src.models.segmentation import SegmentationUnet
+from src.models.resnet_backbone import ResNetBackBone
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor, EarlyStopping
 
@@ -16,7 +17,7 @@ def parse_weights(state_dict):
 data_dir = os.path.join(os.curdir, "data")
 processed_dir = os.path.abspath(os.path.join(data_dir, "processed"))
 checkpoint_path = os.path.join(os.curdir, "logs", "autoencoder", "version_2", "checkpoints", "epoch=0.ckpt")
-images_datamodule = SegmentationLoader(data_dir=processed_dir, batch_size=16)
+images_datamodule = SegmentationLoader(data_dir=processed_dir, batch_size=2)
 
 model_name = "unet"
 version = "autoencoder-raw-2"
@@ -32,7 +33,8 @@ early_stop = EarlyStopping(monitor="val_loss", min_delta=0.001, mode="min", pati
 pretrained_weights = torch.load(checkpoint_path)["state_dict"]
 encoder_weights, decoder_weights = parse_weights(pretrained_weights)
 
-model = SegmentationUnet(lr=lr, gamma=gamma, freeze_encoder=False, encoder_weights=encoder_weights)
+# model = SegmentationUnet(lr=lr, gamma=gamma, freeze_encoder=freeze_encoder, encoder_weights=encoder_weights)
+model = ResNetBackBone(lr=lr, gamma=gamma)
 
 trainer = pl.Trainer(gpus=-1, logger=tensorboard_logger, max_epochs=50,
                      callbacks=[checkpoint_callback, lr_logger, early_stop])
