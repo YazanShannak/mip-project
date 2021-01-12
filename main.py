@@ -8,10 +8,12 @@ from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor, Ea
 data_dir = os.path.join(os.curdir, "data")
 processed_dir = os.path.abspath(os.path.join(data_dir, "processed"))
 
-images_datamodule = AutoencoderDataLoader(data_dir=processed_dir, batch_size=16)
+mode = "masks"
+
+images_datamodule = AutoencoderDataLoader(data_dir=processed_dir, batch_size=4, mode=mode)
 
 model_name = "autoencoder"
-version = 1
+version = 3
 lr = 1e-4
 gamma = 1
 
