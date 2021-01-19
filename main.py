@@ -10,7 +10,7 @@ processed_dir = os.path.abspath(os.path.join(data_dir, "processed"))
 
 mode = "masks"
 
-images_datamodule = AutoencoderDataLoader(data_dir=processed_dir, batch_size=4, mode=mode)
+images_datamodule = AutoencoderDataLoader(data_dir=processed_dir, batch_size=16, mode=mode)
 
 model_name = "autoencoder"
 version = 3

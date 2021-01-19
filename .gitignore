@@ -8,3 +8,4 @@ train.out
 logs/
 *.pem
 *.zip
+*logs*
