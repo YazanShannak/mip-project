@@ -9,3 +9,4 @@ logs/
 *.pem
 *.zip
 *logs*
+!MIP Project.zip
