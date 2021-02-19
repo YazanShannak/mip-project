@@ -1,28 +1,14 @@
 import torch
 import pytorch_lightning as pl
-from src.models.unet import UnetEncoder, UnetDecoder
-from src.models.utils import DiceCoefficient, IoUCoefficient, DiceBCELoss, FocalLoss
+import segmentation_models_pytorch as smp
+from .utils import DiceCoefficient, DiceBCELoss, IoUCoefficient
 
 
-class SegmentationUnet(pl.LightningModule):
-    def __init__(self, lr: float = 1e-4, gamma: float = 0.5, freeze_encoder: bool = False, encoder_weights=None,
-                 decoder_weights=None):
-        super(SegmentationUnet, self).__init__()
-        self.save_hyperparameters("lr", "gamma", "freeze_encoder")
-        self.encoder = UnetEncoder()
-        self.decoder = UnetDecoder()
-
-        if encoder_weights is not None:
-            self.encoder.load_state_dict(state_dict=encoder_weights)
-
-        if decoder_weights is not None:
-            self.decoder.load_state_dict(state_dict=decoder_weights)
-
-        if freeze_encoder:
-            self.encoder.eval()
-            for param in self.encoder.parameters():
-                param.requires_grad = False
-
+class ResNetBackBone(pl.LightningModule):
+    def __init__(self, lr: float = 1e-4, gamma: float = 0.5):
+        super(ResNetBackBone, self).__init__()
+        self.model = smp.Unet(encoder_name="resnet50", encoder_weights="imagenet", in_channels=1, classes=1,
+                              activation="sigmoid")
         self.lr = lr
         self.gamma = gamma
         self.criterion = DiceBCELoss()
@@ -30,8 +16,7 @@ class SegmentationUnet(pl.LightningModule):
         self.iou = IoUCoefficient()
 
     def forward(self, x):
-        encoder_outputs = self.encoder(x)
-        output = self.decoder(*encoder_outputs)
+        output = self.model(x)
         return output
 
     def training_step(self, batch, batch_idx):

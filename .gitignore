@@ -7,3 +7,6 @@ __pycache__/
 train.out
 logs/
 *.pem
+*.zip
+*logs*
+!MIP Project.zip
