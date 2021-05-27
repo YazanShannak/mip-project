@@ -10,8 +10,7 @@
   - [x] regroup all images from both cases (+ve and -ve)
   - [x] resize all images into 512 * 512
   - [x] normalize the images and masks
-  - [x] split the data into training and validation datasets 
-=======
+  - [x] Split the data into training and validation datasets
 ## Authors
 >>>>>>> 3e2f66c00f3fefc414580b6352d7c4701be562ab
 
